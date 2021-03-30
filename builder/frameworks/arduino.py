@@ -35,12 +35,12 @@ import multiprocessing
 def append_lto_options():
     if "windows" in get_systype():
         env.Append(
-            CCFLAGS=["-flto"],
+            CCFLAGS=["-flto", "-fipa-pta"],
             LINKFLAGS=["-flto"]
         )
     else:
         env.Append(
-            CCFLAGS=["-flto"],
+            CCFLAGS=["-flto", "-fipa-pta"],
             LINKFLAGS=["-flto=" + str(multiprocessing.cpu_count())]
         )
 
