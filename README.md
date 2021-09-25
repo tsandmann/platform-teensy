@@ -12,19 +12,8 @@ Teensy is a complete USB-based microcontroller development system, in a very sma
 1. [Install PlatformIO](http://platformio.org)
 2. Create PlatformIO project and configure a platform option in [platformio.ini](http://docs.platformio.org/page/projectconf.html) file:
 
-## Stable version
-
 ```ini
-[env:stable]
-platform = teensy
-board = ...
-...
-```
-
-## Development version
-
-```ini
-[env:development]
+[env:teensy41]
 platform = https://github.com/tsandmann/platform-teensy.git
 board = ...
 ...

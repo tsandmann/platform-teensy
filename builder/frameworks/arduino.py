@@ -82,13 +82,13 @@ if not set(env.get("CPPDEFINES", [])) & set(BUILTIN_USB_FLAGS):
     env.Append(CPPDEFINES=["USB_SERIAL"])
 
 env.Replace(
-    SIZEPROGREGEXP=r"^(?:\.text|\.text\.progmem|\.text\.itcm|\.data)\s+([0-9]+).*",
-    SIZEDATAREGEXP=r"^(?:\.usbdescriptortable|\.dmabuffers|\.usbbuffers|\.data|\.bss|\.noinit|\.text\.itcm|\.text\.itcm\.padding)\s+([0-9]+).*"
+    SIZEPROGREGEXP=r"^(?:\.text|\.text\.headers|\.text\.itcm|\.text\.code|\.text\.progmem|\.data|\.data\.func|\.ARM\.exidx|\.ARM\.extab|\.text\.csf)\s+([0-9]+).*",
+    SIZEDATAREGEXP=r"^(?:\.data|\.bss|\.noinit|\.text\.itcm|\.text\.itcm\.padding)\s+([0-9]+).*"
 )
 
 env.Append(
     CPPDEFINES=[
-        ("ARDUINO", 10805),
+        ("ARDUINO", 10815),
         ("TEENSYDUINO", int(FRAMEWORK_VERSION.split(".")[1])),
         "CORE_TEENSY"
     ],
@@ -198,9 +198,15 @@ elif "BOARD" in env and BUILD_CORE in ("teensy3", "teensy4"):
     if not env.BoardConfig().get("build.ldscript", ""):
         env.Replace(LDSCRIPT_PATH=env.BoardConfig().get("build.arduino.ldscript", ""))
 
-    if env.BoardConfig().id_ in ("teensy35", "teensy36", "teensy40", "teensy41"):
+    if env.BoardConfig().id_ in (
+        "teensy35",
+        "teensy36",
+        "teensy40",
+        "teensy41",
+        "teensymm",
+    ):
         fpv_version = "4-sp"
-        if env.BoardConfig().id_.startswith("teensy4"):
+        if env.BoardConfig().id_.startswith(("teensy4", "teensymm")):
             fpv_version = "5"
 
         env.Append(
@@ -299,23 +305,37 @@ elif "BOARD" in env and BUILD_CORE in ("teensy3", "teensy4"):
                 LINKFLAGS=["-O2"]
             )
 
+
+cpu = env.BoardConfig().get("build.cpu", "")
+if "cortex-m" in cpu:
+    board = env.subst("$BOARD")
+    math_lib = "arm_cortex%s_math"
+    if board in ("teensy35", "teensy36"):
+        math_lib = math_lib % "M4lf"
+    elif board in ("teensy30", "teensy31"):
+        math_lib = math_lib % "M4l"
+    elif board.startswith(("teensy4", "teensymm")):
+        math_lib = math_lib % "M7lfsp"
+    else:
+        math_lib = math_lib % "M0l"
+
+    #env.Prepend(LIBS=[math_lib])
+
+    if cpu.startswith(("cortex-m4", "cortex-m0")):
+        env.Append(
+            CCFLAGS=[
+                "-mno-unaligned-access",
+                "-fsingle-precision-constant"
+            ],
+
+            LINKFLAGS=[
+                "-fsingle-precision-constant"
+            ]
+        )
+
 env.Append(
     ASFLAGS=env.get("CCFLAGS", [])[:]
 )
-
-#if "cortex-m" in env.BoardConfig().get("build.cpu", ""):
-#    board = env.subst("$BOARD")
-#    math_lib = "arm_cortex%s_math"
-#    if board in ("teensy35", "teensy36"):
-#        math_lib = math_lib % "M4lf"
-#    elif board in ("teensy30", "teensy31"):
-#        math_lib = math_lib % "M4l"
-#    elif board.startswith("teensy4"):
-#        math_lib = math_lib % "M7lfsp"
-#    else:
-#        math_lib = math_lib % "M0l"
-#
-#    env.Prepend(LIBS=[math_lib])
 
 # Teensy 2.x Core
 if BUILD_CORE == "teensy":

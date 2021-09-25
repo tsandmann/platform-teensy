@@ -24,21 +24,17 @@ env = DefaultEnvironment()
 platform = env.PioPlatform()
 board_config = env.BoardConfig()
 
-env.Replace(
-    ARFLAGS=["rc"],
-
-    SIZEPROGREGEXP=r"^(?:\.text|\.data|\.rodata|\.text.align|\.ARM.exidx)\s+(\d+).*",
-    SIZEDATAREGEXP=r"^(?:\.data|\.bss|\.noinit)\s+(\d+).*",
-    SIZECHECKCMD="$SIZETOOL -A -d $SOURCES",
-
-    PROGSUFFIX=".elf"
-)
-
 # Allow user to override via pre:script
 if env.get("PROGNAME", "program") == "program":
     env.Replace(PROGNAME="firmware")
 
-if "BOARD" in env and board_config.get("build.core") == "teensy":
+env.Replace(
+    ARFLAGS=["rc"],
+    PROGSUFFIX=".elf"
+)
+
+build_core = board_config.get("build.core", "")
+if "BOARD" in env and build_core == "teensy":
     env.Replace(
         AR="avr-ar",
         AS="avr-as",
@@ -48,7 +44,7 @@ if "BOARD" in env and board_config.get("build.core") == "teensy":
         OBJCOPY="avr-objcopy",
         RANLIB="avr-ranlib",
         SIZETOOL="avr-size",
-        SIZEPRINTCMD='$SIZETOOL --mcu=$BOARD_MCU -C -d $SOURCES'
+        SIZEPRINTCMD="$SIZETOOL --mcu=$BOARD_MCU -C -d $SOURCES"
     )
 
     env.Append(
@@ -88,7 +84,7 @@ if "BOARD" in env and board_config.get("build.core") == "teensy":
     if not env.get("PIOFRAMEWORK"):
         env.SConscript("frameworks/_bare_avr.py")
 
-elif "BOARD" in env and board_config.get("build.core") == "teensy3":
+elif "BOARD" in env and build_core == "teensy3":
     env.Replace(
         AR="arm-cortexm4f-eabi-gcc-ar",
         AS="arm-cortexm4f-eabi-as",
@@ -101,7 +97,7 @@ elif "BOARD" in env and board_config.get("build.core") == "teensy3":
         SIZEPRINTCMD='$SIZETOOL -B -d $SOURCES'
     )
 
-elif "BOARD" in env and board_config.get("build.core") == "teensy4":
+elif "BOARD" in env and build_core == "teensy4":
     env.Replace(
         AR="arm-cortexm7f-eabi-gcc-ar",
         AS="arm-cortexm7f-eabi-as",
@@ -114,7 +110,7 @@ elif "BOARD" in env and board_config.get("build.core") == "teensy4":
         SIZEPRINTCMD='$SIZETOOL -B -d $SOURCES'
     )
 
-if "BOARD" in env and board_config.get("build.core") in ("teensy3", "teensy4"):
+if "BOARD" in env and build_core in ("teensy3", "teensy4"):
     env.Append(
         BUILDERS=dict(
             ElfToBin=Builder(
@@ -146,6 +142,21 @@ if "BOARD" in env and board_config.get("build.core") in ("teensy3", "teensy4"):
     if not env.get("PIOFRAMEWORK"):
         env.SConscript("frameworks/_bare_arm.py")
 
+# Default GCC's size tool
+env.Replace(
+    SIZECHECKCMD="$SIZETOOL -A -d $SOURCES",
+    SIZEPROGREGEXP=r"^(?:\.text|\.text\.progmem|\.text\.itcm|\.data|\.text\.csf)\s+([0-9]+).*",
+    SIZEDATAREGEXP=r"^(?:\.usbdescriptortable|\.dmabuffers|\.usbbuffers|\.data|\.bss|\.noinit|\.text\.itcm|\.text\.itcm\.padding)\s+([0-9]+).*",
+)
+
+# Disable memory calculation and print output from custom "teensy_size" tool
+#if "arduino" in env.subst("$PIOFRAMEWORK") and build_core == "teensy4":
+#    env.Replace(
+#        SIZETOOL=None,
+#        SIZECHECKCMD=None,
+#        SIZEPRINTCMD="teensy_size $SOURCES",
+#    )
+
 #
 # Target: Build executable and linkable firmware
 #
@@ -157,6 +168,7 @@ if "nobuild" in COMMAND_LINE_TARGETS:
 else:
     target_elf = env.BuildProgram()
     target_firm = env.ElfToHex(join("$BUILD_DIR", "${PROGNAME}"), target_elf)
+    env.Depends(target_firm, "checkprogsize")
 
 AlwaysBuild(env.Alias("nobuild", target_firm))
 target_buildprog = env.Alias("buildprog", target_firm, target_firm)
