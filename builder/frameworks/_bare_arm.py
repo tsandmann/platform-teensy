@@ -87,7 +87,7 @@ if env.BoardConfig().id_ in ("teensy35", "teensy36"):
         ]
     )
 
-if env.BoardConfig().id_ in ("teensy40", "teensy41"):
+if env.BoardConfig().id_ in ("teensy40", "teensy41", "teensymm"):
     env.Append(
         CFLAGS=[
             "-std=gnu17"

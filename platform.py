@@ -20,7 +20,7 @@ from platformio.managers.platform import PlatformBase
 from platformio.util import get_systype
 
 
-class TeensyPlatform(PlatformBase):
+class TeensytsPlatform(PlatformBase):
 
     @staticmethod
     def _is_macos():
@@ -63,9 +63,12 @@ class TeensyPlatform(PlatformBase):
             if self._is_windows() and "toolchain-gccarmnoneeabi" in self.packages:
                 del self.packages['toolchain-gccarmnoneeabi']
 
-        if "mbed" in variables.get("pioframework", []):
+        frameworks = variables.get("pioframework", [])
+        if "mbed" in frameworks:
             self.packages["toolchain-gccarmnoneeabi"][
                 "version"] = ">=1.60301.0,<1.80000.0"
+        elif "arduino" in frameworks and board_config.get("build.core", "") == "teensy4":
+            self.packages["tool-teensy"]["optional"] = False
 
         # configure J-LINK tool
         jlink_conds = [
@@ -127,9 +130,10 @@ class TeensyPlatform(PlatformBase):
 
     def configure_debug_options(self, initial_debug_options, ide_data):
         debug_options = copy.deepcopy(initial_debug_options)
-        server_executable = debug_options["server"]["executable"].lower()
         adapter_speed = initial_debug_options.get("speed")
         if adapter_speed:
+            server_options = debug_options.get("server") or {}
+            server_executable = server_options.get("executable", "").lower()
             if "jlink" in server_executable:
                 debug_options["server"]["arguments"].extend(
                     ["-speed", adapter_speed]

@@ -1,5 +1,5 @@
 {
-  "name": "teensy",
+  "name": "teensy-ts",
   "title": "Teensy",
   "description": "Teensy is a complete USB-based microcontroller development system, in a very small footprint, capable of implementing many types of projects. All programming is done via the USB port. No special programmer is needed, only a standard USB cable and a PC or Macintosh with a USB port.",
   "homepage": "https://www.pjrc.com/teensy",
@@ -19,7 +19,7 @@
     "type": "git",
     "url": "https://github.com/tsandmann/platform-teensy.git"
   },
-  "version": "4.12.0",
+  "version": "4.13.1",
   "frameworks": {
     "arduino": {
       "package": "framework-arduinoteensy",
