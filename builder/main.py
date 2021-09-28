@@ -177,9 +177,14 @@ target_buildprog = env.Alias("buildprog", target_firm, target_firm)
 # Target: Print binary size
 #
 
-target_size = env.Alias(
-    "size", target_elf,
-    env.VerboseAction("$SIZEPRINTCMD", "Calculating size $SOURCE"))
+if env.BoardConfig().get("build.core") == "teensy4":
+    target_size = env.Alias(
+        "checkprogsize", target_elf,
+        env.VerboseAction("$SIZEPRINTCMD", "Calculating size $SOURCE"))
+else:
+    target_size = env.Alias(
+        "size", target_elf,
+        env.VerboseAction("$SIZEPRINTCMD", "Calculating size $SOURCE"))    
 AlwaysBuild(target_size)
 
 #

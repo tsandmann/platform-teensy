@@ -23,9 +23,11 @@ http://arduino.cc/en/Reference/HomePage
 """
 
 from io import open
-from os import listdir
+from os import listdir, environ
 from os.path import isdir, isfile, join
 from platformio.util import get_systype
+from platformio.proc import exec_command
+import re
 
 from SCons.Script import DefaultEnvironment
 
@@ -43,6 +45,68 @@ def append_lto_options():
             CCFLAGS=["-flto", "-fipa-pta"],
             LINKFLAGS=["-flto=" + str(multiprocessing.cpu_count())]
         )
+
+def get_size_output(source):
+    cmd = env.get("SIZECHECKCMD")
+    if not cmd:
+        return None
+    if not isinstance(cmd, list):
+        cmd = cmd.split()
+    cmd = [arg.replace("$SOURCES", str(source[0])) for arg in cmd if arg]
+    sysenv = environ.copy()
+    sysenv["PATH"] = str(env["ENV"]["PATH"])
+    result = exec_command(env.subst(cmd), env=sysenv)
+    if result["returncode"] != 0:
+        return None
+    return result["out"].strip()
+
+def calculate_size(output, pattern):
+    if not output or not pattern:
+        return -1
+    size = 0
+    regexp = re.compile(pattern)
+    for line in output.split("\n"):
+        line = line.strip()
+        if not line:
+            continue
+        match = regexp.search(line)
+        if not match:
+            continue
+        size += sum(int(value) for value in match.groups())
+    return size
+
+def format_availale_bytes(value, total):
+    percent_raw = float(value) / float(total)
+    blocks_per_progress = 10
+    used_blocks = min(int(round(blocks_per_progress * percent_raw)), blocks_per_progress)
+    return "[{:{}}] {: 6.1%} (used {:d} bytes from {:d} bytes)".format("=" * used_blocks, blocks_per_progress, percent_raw, value, total)
+
+def print_size_teensy4(target, source, env):
+    env.Replace(SIZECHECKCMD = env.get("SIZETOOL_SAVED") + " -A -d $SOURCES")
+
+    program_max_size = int(env.BoardConfig().get("upload.maximum_size", 0))
+    ram1_max_size = int(env.BoardConfig().get("upload.maximum_ram_size", 0))
+    ram2_max_size = int(env.BoardConfig().get("upload.maximum_ram_size", 0))
+
+    output = get_size_output(source)
+    program_size = calculate_size(output, env.get("SIZEPROGREGEXP"))
+    ram1_usage = calculate_size(output, env.get("SIZEDATAREGEXP"))
+    ram2_usage = calculate_size(output, env.get("SIZERAM2REGEXP"))
+    itcm = calculate_size(output, env.get("SIZEITCMREGEXP"))
+    itcm_blocks = (itcm + 0x7FFF) >> 15
+    itcm_total = itcm_blocks * 32768
+    itcm_padding = itcm_total - itcm
+
+    if ram1_max_size and ram1_usage > -1:
+        print("RAM 1:  %s" % format_availale_bytes(ram1_usage + itcm_padding, ram1_max_size))
+    if ram2_max_size and ram2_usage > -1:
+        print("RAM 2:  %s" % format_availale_bytes(ram2_usage, ram2_max_size))
+    if program_max_size and program_size > -1:
+        print("Flash:  %s" % format_availale_bytes(program_size, program_max_size))
+    if int(ARGUMENTS.get("PIOVERBOSE", 0)):
+        print("ITCM P: %s" % format_availale_bytes(itcm_padding, 32767))
+        print("")
+        print(output)
 
 env = DefaultEnvironment()
 platform = env.PioPlatform()
@@ -83,7 +147,9 @@ if not set(env.get("CPPDEFINES", [])) & set(BUILTIN_USB_FLAGS):
 
 env.Replace(
     SIZEPROGREGEXP=r"^(?:\.text|\.text\.headers|\.text\.itcm|\.text\.code|\.text\.progmem|\.data|\.data\.func|\.ARM\.exidx|\.ARM\.extab|\.text\.csf)\s+([0-9]+).*",
-    SIZEDATAREGEXP=r"^(?:\.data|\.bss|\.noinit|\.text\.itcm|\.text\.itcm\.padding)\s+([0-9]+).*"
+    SIZEDATAREGEXP=r"^(?:\.data|\.bss|\.noinit|\.text\.itcm|\.text\.itcm\.padding)\s+([0-9]+).*",
+    SIZEITCMREGEXP=r"^(?:\.text\.itcm)\s+([0-9]+).*",
+    SIZERAM2REGEXP=r"^(?:\.ARM\.exidx|\.ARM\.extab|\.bss\.dma)\s+([0-9]+).*"
 )
 
 env.Append(
@@ -186,6 +252,14 @@ elif "BOARD" in env and BUILD_CORE in ("teensy3", "teensy4"):
         LIBS=["m", "stdc++"]
     )
     
+    if BUILD_CORE == "teensy4":
+        env.Replace(
+            SIZETOOL_SAVED = env.get("SIZETOOL"),
+            SIZETOOL = None,
+            SIZECHECKCMD = None,
+            SIZEPRINTCMD = print_size_teensy4
+        )
+
     if "SET_CURRENT_TIME" in env['CPPDEFINES']:
         env.Append(
             LINKFLAGS=["-Wl,--defsym=__rtc_localtime=$UNIX_TIME"]
