@@ -180,11 +180,13 @@ target_buildprog = env.Alias("buildprog", target_firm, target_firm)
 if env.BoardConfig().get("build.core") == "teensy4":
     target_size = env.Alias(
         "checkprogsize", target_elf,
-        env.VerboseAction("$SIZEPRINTCMD", "Calculating size $SOURCE"))
+        env.VerboseAction("$SIZEPRINTCMD", " ")
+    )
 else:
     target_size = env.Alias(
         "size", target_elf,
-        env.VerboseAction("$SIZEPRINTCMD", "Calculating size $SOURCE"))    
+        env.VerboseAction("$SIZEPRINTCMD", "Calculating size $SOURCE")
+    )
 AlwaysBuild(target_size)
 
 #
