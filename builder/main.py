@@ -149,6 +149,8 @@ env.Replace(
     SIZEDATAREGEXP=r"^(?:\.usbdescriptortable|\.dmabuffers|\.usbbuffers|\.data|\.bss|\.noinit|\.text\.itcm|\.text\.itcm\.padding)\s+([0-9]+).*",
 )
 
+print("PlatformIO running on " + util.get_systype())
+
 # Disable memory calculation and print output from custom "teensy_size" tool
 #if "arduino" in env.subst("$PIOFRAMEWORK") and build_core == "teensy4":
 #    env.Replace(
