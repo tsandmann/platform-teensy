@@ -23,14 +23,25 @@ from platformio.util import get_systype
 class TeensytsPlatform(PlatformBase):
 
     @staticmethod
-    def _is_macos():
+    def _is_macos_x86():
         systype = util.get_systype()
         return "darwin_x86_64" in systype
 
     @staticmethod
-    def _is_linux():
+    def _is_macos_arm():
+        systype = util.get_systype()
+        return "darwin_arm64" in systype
+
+    @staticmethod
+    def _is_linux_x86():
         systype = util.get_systype()
         return "linux_x86_64" in systype
+
+    @staticmethod
+    def _is_linux_arm():
+        systype = util.get_systype()
+        return "linux_arm" in systype
+
     @staticmethod
     def _is_windows():
         systype = util.get_systype()
@@ -44,24 +55,53 @@ class TeensytsPlatform(PlatformBase):
                 del_toolchain = "toolchain-atmelavr"
             if del_toolchain in self.packages:
                 del self.packages[del_toolchain]
-            if self._is_linux() and "toolchain-arm-cortexm-mac" in self.packages:
-                del self.packages['toolchain-arm-cortexm-mac']
-            if self._is_linux() and "toolchain-arm-cortexm-win64" in self.packages:
-                del self.packages['toolchain-arm-cortexm-win64']
-            if self._is_linux() and "toolchain-gccarmnoneeabi" in self.packages:
-                del self.packages['toolchain-gccarmnoneeabi']
-            if self._is_macos() and "toolchain-arm-cortexm-linux" in self.packages:
-                del self.packages['toolchain-arm-cortexm-linux']
-            if self._is_macos() and "toolchain-arm-cortexm-win64" in self.packages:
-                del self.packages['toolchain-arm-cortexm-win64']
-            if self._is_macos() and "toolchain-gccarmnoneeabi" in self.packages:
-                del self.packages['toolchain-gccarmnoneeabi']
-            if self._is_windows() and "toolchain-arm-cortexm-linux" in self.packages:
-                del self.packages['toolchain-arm-cortexm-linux']
-            if self._is_windows() and "toolchain-arm-cortexm-mac" in self.packages:
-                del self.packages['toolchain-arm-cortexm-mac']
-            if self._is_windows() and "toolchain-gccarmnoneeabi" in self.packages:
-                del self.packages['toolchain-gccarmnoneeabi']
+            if self._is_linux_x86():
+                if "toolchain-arm-cortexm-mac" in self.packages:
+                    del self.packages['toolchain-arm-cortexm-mac']
+                if "toolchain-arm-cortexm-macos-arm64" in self.packages:
+                    del self.packages['toolchain-arm-cortexm-macos-arm64']
+                if "toolchain-arm-cortexm-win64" in self.packages:
+                    del self.packages['toolchain-arm-cortexm-win64']
+                if "toolchain-gccarmnoneeabi" in self.packages:
+                    del self.packages['toolchain-gccarmnoneeabi']
+            if self._is_linux_arm():
+                if "toolchain-arm-cortexm-mac" in self.packages:
+                    del self.packages['toolchain-arm-cortexm-mac']
+                if "toolchain-arm-cortexm-macos-arm64" in self.packages:
+                    del self.packages['toolchain-arm-cortexm-macos-arm64']
+                if "toolchain-arm-cortexm-win64" in self.packages:
+                    del self.packages['toolchain-arm-cortexm-win64']
+                if "toolchain-arm-cortexm-linux" in self.packages:
+                    del self.packages['toolchain-arm-cortexm-linux']
+                if "toolchain-gccarmnoneeabi" in self.packages:
+                    del self.packages['toolchain-gccarmnoneeabi']
+            if self._is_macos_x86():
+                if "toolchain-arm-cortexm-macos-arm64" in self.packages:
+                    del self.packages['toolchain-arm-cortexm-macos-arm64']
+                if "toolchain-arm-cortexm-linux" in self.packages:
+                    del self.packages['toolchain-arm-cortexm-linux']
+                if "toolchain-arm-cortexm-win64" in self.packages:
+                    del self.packages['toolchain-arm-cortexm-win64']
+                if "toolchain-gccarmnoneeabi" in self.packages:
+                    del self.packages['toolchain-gccarmnoneeabi']
+            if self._is_macos_arm():
+                if "toolchain-arm-cortexm-mac" in self.packages:
+                    del self.packages['toolchain-arm-cortexm-mac']
+                if "toolchain-arm-cortexm-linux" in self.packages:
+                    del self.packages['toolchain-arm-cortexm-linux']
+                if "toolchain-arm-cortexm-win64" in self.packages:
+                    del self.packages['toolchain-arm-cortexm-win64']
+                if "toolchain-gccarmnoneeabi" in self.packages:
+                    del self.packages['toolchain-gccarmnoneeabi']
+            if self._is_windows():
+                if "toolchain-arm-cortexm-linux" in self.packages:
+                    del self.packages['toolchain-arm-cortexm-linux']
+                if "toolchain-arm-cortexm-mac" in self.packages:
+                    del self.packages['toolchain-arm-cortexm-mac']
+                if "toolchain-arm-cortexm-macos-arm64" in self.packages:
+                    del self.packages['toolchain-arm-cortexm-macos-arm64']
+                if "toolchain-gccarmnoneeabi" in self.packages:
+                    del self.packages['toolchain-gccarmnoneeabi']
 
         frameworks = variables.get("pioframework", [])
         if "mbed" in frameworks:
