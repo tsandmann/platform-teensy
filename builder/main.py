@@ -16,6 +16,8 @@ import sys
 from platform import system
 from os import makedirs
 from os.path import isdir, isfile, join
+from platformio import util
+from platformio.util import get_systype
 
 from SCons.Script import (COMMAND_LINE_TARGETS, AlwaysBuild, Builder, Default,
                           DefaultEnvironment)
