@@ -147,7 +147,7 @@ if not set(env.get("CPPDEFINES", [])) & set(BUILTIN_USB_FLAGS):
 
 env.Replace(
     SIZEPROGREGEXP=r"^(?:\.text|\.text\.headers|\.text\.itcm|\.text\.code|\.text\.progmem|\.data|\.data\.func|\.ARM\.exidx|\.ARM\.extab|\.text\.csf)\s+([0-9]+).*",
-    SIZEDATAREGEXP=r"^(?:\.data|\.bss|\.noinit|\.text\.itcm|\.text\.itcm\.padding)\s+([0-9]+).*",
+    SIZEDATAREGEXP=r"^(?:\.usbdescriptortable|\.dmabuffers|\.usbbuffers|\.data|\.bss|\.noinit|\.text\.itcm|\.text\.itcm\.padding)\s+([0-9]+).*",
     SIZEITCMREGEXP=r"^(?:\.text\.itcm)\s+([0-9]+).*",
     SIZERAM2REGEXP=r"^(?:\.ARM\.exidx|\.ARM\.extab|\.bss\.dma)\s+([0-9]+).*"
 )
@@ -456,6 +456,7 @@ if "build.variant" in env.BoardConfig():
 libs.append(env.BuildLibrary(
     join("$BUILD_DIR", "FrameworkArduino"),
     join(FRAMEWORK_DIR, ".", BUILD_CORE)
+    src_filter="+<*> -<Blink.cc>"
 ))
 
 env.Prepend(LIBS=libs)
