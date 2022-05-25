@@ -455,7 +455,7 @@ if "build.variant" in env.BoardConfig():
 
 libs.append(env.BuildLibrary(
     join("$BUILD_DIR", "FrameworkArduino"),
-    join(FRAMEWORK_DIR, ".", BUILD_CORE)
+    join(FRAMEWORK_DIR, ".", BUILD_CORE),
     src_filter="+<*> -<Blink.cc>"
 ))
 
