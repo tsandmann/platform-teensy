@@ -13,13 +13,13 @@
       "Microchip"
   ],
   "engines": {
-    "platformio": "^5"
+    "platformio": "^6"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/tsandmann/platform-teensy.git"
   },
-  "version": "4.14.0",
+  "version": "4.16.0",
   "frameworks": {
     "arduino": {
       "package": "framework-arduinoteensy",
@@ -28,6 +28,10 @@
     "mbed": {
       "package": "framework-mbed",
       "script": "builder/frameworks/mbed.py"
+    },
+    "zephyr": {
+      "package": "framework-zephyr",
+      "script": "builder/frameworks/zephyr.py"
     }
   },
   "packages": {
@@ -48,13 +52,19 @@
       "type": "framework",
       "optional": true,
       "owner": "tsandmann",
-      "version": "https://github.com/tsandmann/teensy-cores.git"
+      "version": "https://github.com/tsandmann/teensy-cores.git#no_warnings"
     },
     "framework-mbed": {
       "type": "framework",
       "optional": true,
       "owner": "platformio",
       "version": "~6.51506.0"
+    },
+    "framework-zephyr": {
+      "type": "framework",
+      "optional": true,
+      "owner": "platformio",
+      "version": "~2.20701.0"
     },
     "tool-teensy": {
       "type": "uploader",
@@ -71,22 +81,22 @@
     "toolchain-arm-cortexm-mac": {
       "type": "toolchain",
       "owner": "tsandmann",
-      "version": "https://github.com/tsandmann/arm-cortexm-toolchain-mac.git"
+      "version": "https://github.com/tsandmann/arm-cortexm-toolchain-mac.git#v12.1"
     },
     "toolchain-arm-cortexm-macos-arm64": {
       "type": "toolchain",
       "owner": "tsandmann",
-      "version": "https://github.com/tsandmann/arm-cortexm-toolchain-macos-arm64.git"
+      "version": "https://github.com/tsandmann/arm-cortexm-toolchain-macos-arm64.git#v12.1"
     },
     "toolchain-arm-cortexm-linux": {
       "type": "toolchain",
       "owner": "tsandmann",
-      "version": "https://github.com/tsandmann/arm-cortexm-toolchain-linux.git"
+      "version": "https://github.com/tsandmann/arm-cortexm-toolchain-linux.git#v12.1"
     },
     "toolchain-arm-cortexm-win64": {
       "type": "toolchain",
       "owner": "tsandmann",
-      "version": "https://github.com/tsandmann/arm-cortexm-toolchain-win64.git"
+      "version": "https://github.com/tsandmann/arm-cortexm-toolchain-win64.git#v12.1"
     }
   }
 }
