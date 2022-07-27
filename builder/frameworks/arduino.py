@@ -170,7 +170,12 @@ env.Append(
 
 if "BOARD" in env and BUILD_CORE == "teensy":
     env.Append(
-        ASFLAGS=["-x", "assembler-with-cpp"],
+        ASFLAGS=[
+            "-mmcu=$BOARD_MCU"
+        ],
+        ASPPFLAGS=[
+            "-x", "assembler-with-cpp",
+        ],
 
         CCFLAGS=[
             "-Os",  # optimize for size
@@ -202,7 +207,14 @@ if "BOARD" in env and BUILD_CORE == "teensy":
     )
 elif "BOARD" in env and BUILD_CORE in ("teensy3", "teensy4"):
     env.Append(
-        ASFLAGS=["-x", "assembler-with-cpp"],
+        ASFLAGS=[
+            "-mthumb",
+            "-mcpu=%s" % env.BoardConfig().get("build.cpu"),
+        ],
+
+        ASPPFLAGS=[
+            "-x", "assembler-with-cpp",
+        ],
 
         CFLAGS=[
             "-Wno-old-style-declaration",
@@ -227,7 +239,7 @@ elif "BOARD" in env and BUILD_CORE in ("teensy3", "teensy4"):
             "-fno-asynchronous-unwind-tables",
             "-felide-constructors",
             "-fno-rtti",
-            "-std=gnu++17",
+            "-std=gnu++20",
             "-Wno-error=narrowing",
             "-fpermissive"
         ],
@@ -284,11 +296,14 @@ elif "BOARD" in env and BUILD_CORE in ("teensy3", "teensy4"):
             fpv_version = "5"
 
         env.Append(
+            ASFLAGS=[
+                "-mfloat-abi=hard",
+                "-mfpu=fpv%s-d16" % fpv_version
+            ],
             CCFLAGS=[
                 "-mfloat-abi=hard",
                 "-mfpu=fpv%s-d16" % fpv_version
             ],
-
             LINKFLAGS=[
                 "-mfloat-abi=hard",
                 "-mfpu=fpv%s-d16" % fpv_version
@@ -397,19 +412,17 @@ if "cortex-m" in cpu:
 
     if cpu.startswith(("cortex-m4", "cortex-m0")):
         env.Append(
+            ASFLAGS=[
+                "-mno-unaligned-access",
+            ],
             CCFLAGS=[
                 "-mno-unaligned-access",
                 "-fsingle-precision-constant"
             ],
-
             LINKFLAGS=[
                 "-fsingle-precision-constant"
             ]
         )
-
-env.Append(
-    ASFLAGS=env.get("CCFLAGS", [])[:]
-)
 
 # Teensy 2.x Core
 if BUILD_CORE == "teensy":
