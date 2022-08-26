@@ -155,7 +155,7 @@ env.Replace(
 
 env.Append(
     CPPDEFINES=[
-        ("ARDUINO", 10815),
+        ("ARDUINO", 10819),
         ("TEENSYDUINO", int(FRAMEWORK_VERSION.split(".")[1])),
         "CORE_TEENSY"
     ],
