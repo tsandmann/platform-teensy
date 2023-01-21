@@ -81,22 +81,22 @@
     "toolchain-arm-cortexm-mac": {
       "type": "toolchain",
       "owner": "tsandmann",
-      "version": "https://github.com/tsandmann/arm-cortexm-toolchain-mac.git#v12.2-2"
+      "version": "https://github.com/tsandmann/arm-cortexm-toolchain-mac.git#v12.2-3"
     },
     "toolchain-arm-cortexm-macos-arm64": {
       "type": "toolchain",
       "owner": "tsandmann",
-      "version": "https://github.com/tsandmann/arm-cortexm-toolchain-macos-arm64.git#v12.2-2"
+      "version": "https://github.com/tsandmann/arm-cortexm-toolchain-macos-arm64.git#v12.2-3"
     },
     "toolchain-arm-cortexm-linux": {
       "type": "toolchain",
       "owner": "tsandmann",
-      "version": "https://github.com/tsandmann/arm-cortexm-toolchain-linux.git#v12.2-2"
+      "version": "https://github.com/tsandmann/arm-cortexm-toolchain-linux.git#v12.2-3"
     },
     "toolchain-arm-cortexm-win64": {
       "type": "toolchain",
       "owner": "tsandmann",
-      "version": "https://github.com/tsandmann/arm-cortexm-toolchain-win64.git#v12.2-2"
+      "version": "https://github.com/tsandmann/arm-cortexm-toolchain-win64.git#v12.2-3"
     }
   }
 }
