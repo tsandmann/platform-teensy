@@ -22,7 +22,7 @@
   "version": "4.17.0",
   "frameworks": {
     "arduino": {
-      "package": "framework-arduinoteensy",
+      "package": "framework-arduinoteensy-ts",
       "script": "builder/frameworks/arduino.py"
     },
     "mbed": {
@@ -49,6 +49,12 @@
       "version": "~1.70201.0"
     },
     "framework-arduinoteensy": {
+      "optional": true,
+      "owner": "platformio",
+      "type": "framework",
+      "version": "~1.157.0"
+    },
+    "framework-arduinoteensy-ts": {
       "type": "framework",
       "optional": true,
       "owner": "tsandmann",
