@@ -49,14 +49,14 @@
       "version": "~1.50401.0"
     },
     "framework-arduinoteensy": {
-      "optional": true,
+      "optional": false,
       "owner": "platformio",
       "type": "framework",
       "version": "~1.157.0"
     },
     "framework-arduinoteensy-ts": {
       "type": "framework",
-      "optional": true,
+      "optional": false,
       "owner": "tsandmann",
       "version": "https://github.com/tsandmann/teensy-cores.git#no_warnings"
     },
