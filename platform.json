@@ -46,7 +46,7 @@
       "type": "toolchain",
       "optional": false,
       "owner": "platformio",
-      "version": "~1.70201.0"
+      "version": "~1.50401.0"
     },
     "framework-arduinoteensy": {
       "optional": true,
@@ -72,6 +72,21 @@
       "owner": "platformio",
       "version": "~2.20701.0"
     },
+    "tool-cmake": {
+      "optional": true,
+      "owner": "platformio",
+      "version": "~3.21.0"
+    },
+    "tool-dtc": {
+      "optional": true,
+      "owner": "platformio",
+      "version": "~1.4.7"
+    },
+    "tool-gperf": {
+      "optional": true,
+      "owner": "platformio",
+      "version": "^3.0.0"
+    },
     "tool-teensy": {
       "type": "uploader",
       "optional": true,
@@ -83,6 +98,11 @@
       "optional": true,
       "owner": "platformio",
       "version": "^1.63208.0"
+    },
+    "tool-ninja": {
+      "optional": true,
+      "owner": "platformio",
+      "version": "^1.7.0"
     },
     "toolchain-arm-cortexm-mac": {
       "type": "toolchain",
