@@ -13,21 +13,25 @@
       "Microchip"
   ],
   "engines": {
-    "platformio": "^5"
+    "platformio": "^6"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/tsandmann/platform-teensy.git"
   },
-  "version": "4.14.0",
+  "version": "4.17.0",
   "frameworks": {
     "arduino": {
-      "package": "framework-arduinoteensy",
+      "package": "framework-arduinoteensy-ts",
       "script": "builder/frameworks/arduino.py"
     },
     "mbed": {
       "package": "framework-mbed",
       "script": "builder/frameworks/mbed.py"
+    },
+    "zephyr": {
+      "package": "framework-zephyr",
+      "script": "builder/frameworks/zephyr.py"
     }
   },
   "packages": {
@@ -42,19 +46,46 @@
       "type": "toolchain",
       "optional": false,
       "owner": "platformio",
-      "version": "~1.70201.0"
+      "version": "~1.50401.0"
     },
     "framework-arduinoteensy": {
+      "optional": false,
+      "owner": "platformio",
       "type": "framework",
-      "optional": true,
+      "version": "~1.157.0"
+    },
+    "framework-arduinoteensy-ts": {
+      "type": "framework",
+      "optional": false,
       "owner": "tsandmann",
-      "version": "https://github.com/tsandmann/teensy-cores.git"
+      "version": "https://github.com/tsandmann/teensy-cores.git#no_warnings"
     },
     "framework-mbed": {
       "type": "framework",
       "optional": true,
       "owner": "platformio",
       "version": "~6.51506.0"
+    },
+    "framework-zephyr": {
+      "type": "framework",
+      "optional": true,
+      "owner": "platformio",
+      "version": "~2.20701.0"
+    },
+    "tool-cmake": {
+      "optional": true,
+      "owner": "platformio",
+      "version": "~3.21.0"
+    },
+    "tool-dtc": {
+      "optional": true,
+      "owner": "platformio",
+      "version": "~1.4.7"
+    },
+    "tool-gperf": {
+      "optional": true,
+      "owner": "platformio",
+      "version": "^3.0.0"
     },
     "tool-teensy": {
       "type": "uploader",
@@ -67,6 +98,11 @@
       "optional": true,
       "owner": "platformio",
       "version": "^1.63208.0"
+    },
+    "tool-ninja": {
+      "optional": true,
+      "owner": "platformio",
+      "version": "^1.7.0"
     },
     "toolchain-arm-cortexm-mac": {
       "type": "toolchain",
