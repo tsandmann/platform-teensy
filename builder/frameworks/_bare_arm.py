@@ -42,7 +42,7 @@ env.Append(
         "-fdata-sections",
         "-mthumb",
         "-mcpu=%s" % env.BoardConfig().get("build.cpu"),
-        "-fsingle-precision-constant"
+        "-nostdlib"
     ],
 
     CXXFLAGS=[
@@ -122,5 +122,19 @@ if "BOARD" in env:
         ],
         LINKFLAGS=[
             "-mcpu=%s" % env.BoardConfig().get("build.cpu")
+        ]
+    )
+
+if env.BoardConfig().get("build.core", "") != "teensy4":
+    env.Append(
+        ASFLAGS=[
+            "-mno-unaligned-access",
+        ],
+        CCFLAGS=[
+            "-mno-unaligned-access",
+            "-fsingle-precision-constant"
+        ],
+        LINKFLAGS=[
+            "-fsingle-precision-constant"
         ]
     )
