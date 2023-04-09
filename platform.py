@@ -66,7 +66,7 @@ class TeensytsPlatform(PlatformBase):
                 if "toolchain-arm-cortexm-win64" in self.packages:
                     del self.packages['toolchain-arm-cortexm-win64']
                 if "toolchain-gccarmnoneeabi" in self.packages:
-                    del self.packages['toolchain-gccarmnoneeabi']
+                    del self.packages['toolchain-gccarmnoneeabi-teensy']
             if self._is_linux_arm():
                 if "toolchain-arm-cortexm-mac" in self.packages:
                     del self.packages['toolchain-arm-cortexm-mac']
@@ -77,7 +77,7 @@ class TeensytsPlatform(PlatformBase):
                 if "toolchain-arm-cortexm-linux" in self.packages:
                     del self.packages['toolchain-arm-cortexm-linux']
                 if "toolchain-gccarmnoneeabi" in self.packages:
-                    del self.packages['toolchain-gccarmnoneeabi']
+                    del self.packages['toolchain-gccarmnoneeabi-teensy']
             if self._is_macos_x86():
                 if "toolchain-arm-cortexm-macos-arm64" in self.packages:
                     del self.packages['toolchain-arm-cortexm-macos-arm64']
@@ -86,7 +86,7 @@ class TeensytsPlatform(PlatformBase):
                 if "toolchain-arm-cortexm-win64" in self.packages:
                     del self.packages['toolchain-arm-cortexm-win64']
                 if "toolchain-gccarmnoneeabi" in self.packages:
-                    del self.packages['toolchain-gccarmnoneeabi']
+                    del self.packages['toolchain-gccarmnoneeabi-teensy']
             if self._is_macos_arm():
                 if "toolchain-arm-cortexm-mac" in self.packages:
                     del self.packages['toolchain-arm-cortexm-mac']
@@ -95,7 +95,7 @@ class TeensytsPlatform(PlatformBase):
                 if "toolchain-arm-cortexm-win64" in self.packages:
                     del self.packages['toolchain-arm-cortexm-win64']
                 if "toolchain-gccarmnoneeabi" in self.packages:
-                    del self.packages['toolchain-gccarmnoneeabi']
+                    del self.packages['toolchain-gccarmnoneeabi-teensy']
             if self._is_windows():
                 if "toolchain-arm-cortexm-linux" in self.packages:
                     del self.packages['toolchain-arm-cortexm-linux']
@@ -104,19 +104,20 @@ class TeensytsPlatform(PlatformBase):
                 if "toolchain-arm-cortexm-macos-arm64" in self.packages:
                     del self.packages['toolchain-arm-cortexm-macos-arm64']
                 if "toolchain-gccarmnoneeabi" in self.packages:
-                    del self.packages['toolchain-gccarmnoneeabi']
+                    del self.packages['toolchain-gccarmnoneeabi-teensy']
 
         frameworks = variables.get("pioframework", [])
-        if "mbed" in frameworks:
-            self.packages["toolchain-gccarmnoneeabi"][
-                "version"] = ">=1.60301.0,<1.80000.0"
-        elif "zephyr" in frameworks:
+        if "arduino" in frameworks:
+            self.packages.pop("toolchain-gccarmnoneeabi", None)
+        else:
+            self.packages.pop("toolchain-gccarmnoneeabi-teensy", None)
+
+        if "zephyr" in frameworks:
             for p in self.packages:
                 if p in ("tool-cmake", "tool-dtc", "tool-ninja"):
                     self.packages[p]["optional"] = False
             if not IS_WINDOWS:
                 self.packages["tool-gperf"]["optional"] = False
-            self.packages["toolchain-gccarmnoneeabi"]["version"] = "~1.80201.0"
         elif "arduino" in frameworks and board_config.get("build.core", "") == "teensy4":
             self.packages["tool-teensy"]["optional"] = False
 
