@@ -14,13 +14,15 @@
 
 import sys
 from platform import system
-from os import makedirs
+from os import makedirs, environ
 from os.path import isdir, isfile, join
 from platformio import util
 from platformio.util import get_systype
 
 from SCons.Script import (COMMAND_LINE_TARGETS, AlwaysBuild, Builder, Default,
                           DefaultEnvironment)
+
+from platformio.proc import exec_command
 
 env = DefaultEnvironment()
 platform = env.PioPlatform()
@@ -154,12 +156,16 @@ env.Replace(
 print("PlatformIO running on " + util.get_systype())
 
 # Disable memory calculation and print output from custom "teensy_size" tool
-#if "arduino" in env.subst("$PIOFRAMEWORK") and build_core == "teensy4":
-#    env.Replace(
-#        SIZETOOL=None,
-#        SIZECHECKCMD=None,
-#        SIZEPRINTCMD="teensy_size $SOURCES",
-#    )
+if "arduino" in env.subst("$PIOFRAMEWORK") and build_core == "teensy4":
+    def teensy_check_upload_size(_, target, source, env):
+        sysenv = environ.copy()
+        sysenv["PATH"] = str(env["ENV"]["PATH"])
+        result = exec_command(["teensy_size", str(source[0])], env=sysenv)
+        if result["returncode"] != 0:
+            sys.stderr.write(result["err"])
+            env.Exit(1)
+
+    env.AddMethod(teensy_check_upload_size, "CheckUploadSize")
 
 #
 # Target: Build executable and linkable firmware
