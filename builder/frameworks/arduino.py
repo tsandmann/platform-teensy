@@ -243,6 +243,7 @@ elif "BOARD" in env and BUILD_CORE in ("teensy3", "teensy4"):
             "-fno-rtti",
             "-std=gnu++20",
             "-Wno-error=narrowing",
+            "-Wno-volatile",
             "-fpermissive"
         ],
 
@@ -281,6 +282,11 @@ elif "BOARD" in env and BUILD_CORE in ("teensy3", "teensy4"):
     else:
         env.Append(
             LINKFLAGS=["-Wl,--defsym=__rtc_localtime=0"]
+        )
+        
+    if not "DISABLE_PRINTF_FLOAT" in env['CPPDEFINES']:
+        env.Append(
+            LINKFLAGS=["-Wl,-u,_printf_float"]
         )
 
     if not env.BoardConfig().get("build.ldscript", ""):
