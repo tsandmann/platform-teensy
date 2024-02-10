@@ -302,6 +302,7 @@ elif "BOARD" in env and BUILD_CORE in ("teensy3", "teensy4"):
         fpv_version = "4-sp"
         if env.BoardConfig().id_.startswith(("teensy4", "teensymm")):
             fpv_version = "5"
+            env.Append(CXXFLAGS=["-fno-threadsafe-statics"])
 
         env.Append(
             ASFLAGS=[
