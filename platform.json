@@ -54,7 +54,7 @@
       "type": "framework",
       "optional": false,
       "owner": "platformio",
-      "version": "~1.158.0"
+      "version": "~1.159.0"
     },
     "framework-arduinoteensy-ts": {
       "type": "framework",
