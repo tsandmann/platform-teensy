@@ -88,20 +88,7 @@ if "BOARD" in env and build_core == "teensy":
     if not env.get("PIOFRAMEWORK"):
         env.SConscript("frameworks/_bare_avr.py")
 
-elif "BOARD" in env and build_core == "teensy3":
-    env.Replace(
-        AR="arm-cortexm4f-eabi-gcc-ar",
-        AS="arm-cortexm4f-eabi-as",
-        CC="arm-cortexm4f-eabi-gcc",
-        CXX="arm-cortexm4f-eabi-g++",
-        GDB="arm-cortexm4f-eabi-gdb",
-        OBJCOPY="arm-cortexm4f-eabi-objcopy",
-        RANLIB="arm-cortexm4f-eabi-gcc-ar",
-        SIZETOOL="arm-cortexm4f-eabi-size",
-        SIZEPRINTCMD='$SIZETOOL -B -d $SOURCES'
-    )
-
-elif "BOARD" in env and build_core == "teensy4":
+if "BOARD" in env and build_core in ("teensy3", "teensy4"):
     env.Replace(
         AR="arm-cortexm7f-eabi-gcc-ar",
         AS="arm-cortexm7f-eabi-as",
@@ -114,7 +101,6 @@ elif "BOARD" in env and build_core == "teensy4":
         SIZEPRINTCMD='$SIZETOOL -B -d $SOURCES'
     )
 
-if "BOARD" in env and build_core in ("teensy3", "teensy4"):
     env.Append(
         BUILDERS=dict(
             ElfToBin=Builder(
