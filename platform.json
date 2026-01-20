@@ -62,6 +62,12 @@
       "owner": "tsandmann",
       "version": "https://github.com/tsandmann/teensy-cores.git#no_warnings"
     },
+    "platform-teensy-libs": {
+      "type": "framework",
+      "optional": false,
+      "owner": "tsandmann",
+      "version": "https://github.com/tsandmann/platform-teensy-libs"
+    },
     "framework-zephyr": {
       "type": "framework",
       "optional": true,

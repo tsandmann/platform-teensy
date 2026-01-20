@@ -113,6 +113,7 @@ platform = env.PioPlatform()
 
 FRAMEWORK_DIR = platform.get_package_dir("framework-arduinoteensy-ts")
 FRAMEWORK_DIR_LIBS = platform.get_package_dir("framework-arduinoteensy")
+FRAMEWORK_LIB_OVERRIDE_DIR = platform.get_package_dir("platform-teensy-libs")
 FRAMEWORK_VERSION = platform.get_package_version("framework-arduinoteensy-ts")
 BUILD_CORE = env.BoardConfig().get("build.core")
 
@@ -166,6 +167,7 @@ env.Append(
     ],
 
     LIBSOURCE_DIRS=[
+        FRAMEWORK_LIB_OVERRIDE_DIR,
         join(FRAMEWORK_DIR_LIBS, "libraries")
     ]
 )
