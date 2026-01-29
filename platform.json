@@ -109,7 +109,7 @@
     "toolchain-arm-cortexm-mac": {
       "type": "toolchain",
       "owner": "tsandmann",
-      "version": "https://github.com/tsandmann/arm-cortexm-toolchain-mac.git"
+      "version": "https://github.com/tsandmann/arm-cortexm-toolchain-mac.git#v15.2-2"
     },
     "toolchain-arm-cortexm-macos-arm64": {
       "type": "toolchain",
